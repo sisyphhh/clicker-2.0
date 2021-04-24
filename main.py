@@ -112,8 +112,8 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-        '''calc variables'''
         self.add_func()
+        '''calc variables'''
         self.is_equal = False
         self.calc_result = 1
 
@@ -145,7 +145,9 @@ class Ui_MainWindow(object):
 
         '''Qtimer'''
         self.timer = QTimer()
+        self.timer.timeout.connect(self.Set_time)
         self.intro_timer = QTimer()
+        self.intro_timer.timeout.connect(self.Intro)
         #self.timer.timeout.connect(lambda: self.Set_time())
         #self.timer.start(1000)
 
@@ -164,11 +166,11 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Calculator"))
         self.label_text.setText(_translate("MainWindow", "Home:"))
-        self.pushButton_7.setText(_translate("MainWindow", "7"))
-        self.pushButton_8.setText(_translate("MainWindow", "8"))
         self.pushButton_9.setText(_translate("MainWindow", "9"))
-        self.pushButton_5.setText(_translate("MainWindow", "5"))
+        self.pushButton_8.setText(_translate("MainWindow", "8"))
+        self.pushButton_7.setText(_translate("MainWindow", "7"))
         self.pushButton_6.setText(_translate("MainWindow", "6"))
+        self.pushButton_5.setText(_translate("MainWindow", "5"))
         self.pushButton_4.setText(_translate("MainWindow", "4"))
         self.pushButton_3.setText(_translate("MainWindow", "3"))
         self.pushButton_2.setText(_translate("MainWindow", "2"))
@@ -226,32 +228,16 @@ class Ui_MainWindow(object):
         print('done')
 
     def Start(self):
-        '''
-        print('begin with:', self.calc_result)
-
-        if self.is_equal == False:
-            self.label_time.setText(self.label_time.text()+':  '+self.label_text.text())
-        else:
-            self.label_time.setText(self.label_time.text()+':  '+str(self.calc_result))
-        '''
 
         if self.condition == -1:
             #print('we are at -1')
 
-            self.intro_timer.timeout.connect(lambda: self.Intro())
-            self.intro_timer.start(600)
-
-
-            self.label_text.setText("Choose the position by \ncursor and right-click on it:")
-            # self.condition = 0
-            #self.is_equal = True
-
-            #self.pushButton_Enter.click()
+            #self.intro_timer.timeout.connect(self.Intro)
+            self.intro_timer.start(500)
 
         elif self.condition == 0:
             self.FIND_posintion()
-            #print(self.x_coord, self.y_coord)
-            print('x: '+str(self.x_coord)+'\ty: '+str(self.y_coord))
+            #print('x: '+str(self.x_coord)+'\ty: '+str(self.y_coord))
 
             self.condition = 1
             self.label_text.setText("Put a Number of 1-clicks: ")
@@ -291,13 +277,13 @@ class Ui_MainWindow(object):
             print(self.Number_clicks, self.Current_number)
 
             if self.Number_clicks != 0 and self.Current_number != 0:
-                self.timer.timeout.connect(lambda: self.Set_time())
+                #self.timer.timeout.connect(self.Set_time)
                 self.timer.start(1000)# 1000 = 1 sec
 
         elif self.condition == 4:
             self.results()
             print("ho-ho-ho: ", self.calc_result, self.condition)
-            if self.calc_result != 1 or self.calc_result != 2:
+            if self.calc_result != 1 and self.calc_result != 2:
                 self.condition = -1
                 print("other: ", self.calc_result, self.condition)
                 self.pushButton_Enter.click()
@@ -309,10 +295,15 @@ class Ui_MainWindow(object):
         print('intro')
         if self.condition == -1:
             self.condition = 0
-            #self.label_text.setText("Choose the position by \ncursor and right-click on it:")
+            self.label_text.setText("Choose the position by \ncursor and right-click on it:")
             self.is_equal = True
+            print(self.intro_timer.isActive())
+            print(self.intro_timer.timerId())
         else:
+            print(self.intro_timer.timerId())
             self.intro_timer.stop()
+            self.intro_timer.killTimer(self.intro_timer.timerId())
+            print(self.intro_timer.isActive())
             self.pushButton_Enter.click()
 
     def FIND_posintion(self):
@@ -325,21 +316,19 @@ class Ui_MainWindow(object):
                 x, y = mouse.get_position()
                 self.x_coord = x
                 self.y_coord = y
+                print('x: ' + str(self.x_coord) + '\ty: ' + str(self.y_coord))
                 break
 
     def Set_time(self):
-        #now = datetime.datetime.now()
-        #Format_date = now.strftime("Now is %H:%M:%S")
-        #print(Format_date)
-        #self.label_time.setText(str(now.strftime("%H:%M:%S")))
-        #print('Set_time')
         if self.condition == 4:
             self.timer.stop()
+            self.timer.killTimer(self.timer.timerId())
 
             self.label_text.setText("Restart/Continue or end the Session?\nEnter - 1/2/else: ")
             self.is_equal = True
             #self.pushButton_Enter.click()
         else:
+            print('Set_time', self.Current_time)
             self.label_time.setText(str(self.Current_time) + '/' + str(self.Timer_interval))
             self.Current_time -= 1
 
@@ -367,16 +356,6 @@ class Ui_MainWindow(object):
             #print('Current_time:', self.Current_time)
             #print('Timer_interval:', self.Timer_interval)
 
-
-    '''
-    def STOP_session(flag):
-        if flag == '1':
-            return True, 'Restart'
-        elif flag == '2':
-            return True, 'Continue'
-        else:
-            return False, 'Stop'
-    '''
 
 if __name__ == "__main__":
     import sys
