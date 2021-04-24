@@ -145,6 +145,7 @@ class Ui_MainWindow(object):
 
         '''Qtimer'''
         self.timer = QTimer()
+        self.intro_timer = QTimer()
         #self.timer.timeout.connect(lambda: self.Set_time())
         #self.timer.start(1000)
 
@@ -237,9 +238,13 @@ class Ui_MainWindow(object):
         if self.condition == -1:
             #print('we are at -1')
 
-            self.condition = 0
+            self.intro_timer.timeout.connect(lambda: self.Intro())
+            self.intro_timer.start(600)
+
+
             self.label_text.setText("Choose the position by \ncursor and right-click on it:")
-            self.is_equal = True
+            # self.condition = 0
+            #self.is_equal = True
 
             #self.pushButton_Enter.click()
 
@@ -289,12 +294,26 @@ class Ui_MainWindow(object):
                 self.timer.timeout.connect(lambda: self.Set_time())
                 self.timer.start(1000)# 1000 = 1 sec
 
-            '''            
-            self.condition = 4
-            print('4 position - time to ask about continue/stop')
-            self.timer.stop()
-            self.clicker.stop()
-            '''
+        elif self.condition == 4:
+            self.results()
+            print("ho-ho-ho: ", self.calc_result, self.condition)
+            if self.calc_result != 1 or self.calc_result != 2:
+                self.condition = -1
+                print("other: ", self.calc_result, self.condition)
+                self.pushButton_Enter.click()
+            else:
+                self.pushButton_Enter.click()
+
+
+    def Intro(self):
+        print('intro')
+        if self.condition == -1:
+            self.condition = 0
+            #self.label_text.setText("Choose the position by \ncursor and right-click on it:")
+            self.is_equal = True
+        else:
+            self.intro_timer.stop()
+            self.pushButton_Enter.click()
 
     def FIND_posintion(self):
         print("Choose the position you need by cursor and right-click on it:\n")
@@ -313,29 +332,41 @@ class Ui_MainWindow(object):
         #Format_date = now.strftime("Now is %H:%M:%S")
         #print(Format_date)
         #self.label_time.setText(str(now.strftime("%H:%M:%S")))
+        #print('Set_time')
+        if self.condition == 4:
+            self.timer.stop()
 
-        self.label_time.setText(str(self.Current_time) + '/' + str(self.Timer_interval))
-        self.Current_time -= 1
+            self.label_text.setText("Restart/Continue or end the Session?\nEnter - 1/2/else: ")
+            self.is_equal = True
+            #self.pushButton_Enter.click()
+        else:
+            self.label_time.setText(str(self.Current_time) + '/' + str(self.Timer_interval))
+            self.Current_time -= 1
 
-        if self.Current_time == 0:
+            if self.Current_time == -1:
 
-            mouse.move(self.x_coord, self.y_coord)
-            mouse.click(button='left')
+                mouse.move(self.x_coord, self.y_coord)
+                mouse.click(button='left')
 
-            self.Current_number -= 1
-            self.label_click.setText(str(self.Current_number) + '/' + str(self.Number_clicks))
-            print('Current clicks: ', self.Current_number)
+                self.Current_number -= 1
+                self.label_click.setText(str(self.Current_number) + '/' + str(self.Number_clicks))
+                #print('Current clicks: ', self.Current_number)
 
-            if self.Current_number == 0:
-                print('the end')
-                print(self.Current_number, self.Current_time)
-                self.timer.stop()
-                ''' add changes to state'''
-                return
+                if self.Current_number == 0:
+                    #print('the end')
+                    print(self.Current_number, self.Current_time)
+                    #self.timer.stop()
+                    ''' add changes to state'''
 
-            self.Current_time = self.Timer_interval
+                    self.condition = 4
+                    #self.label_text.setText("Restart/Continue or end the Session?\nEnter - 1/2/else: ")
+                    return
+
+                self.Current_time = self.Timer_interval
+
             #print('Current_time:', self.Current_time)
             #print('Timer_interval:', self.Timer_interval)
+
 
     '''
     def STOP_session(flag):
@@ -362,50 +393,3 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
-
-'''
-while self.STARTER:
-    if self.START_Type == 'Continue':
-        self.label_text.setText("Put a Number of 1-clicks: ")
-        print('open')
-        self.is_equal = True
-
-        time.sleep(10)
-        #self.pushButton_equal.clicked.connect(self.results)
-
-        self.Number_click = self.calc_result
-        self.label_click.setText(str(self.Number_click))
-
-        #Number = int(input("Put a Number of 1-clicks: ", ))  # sec
-        #timer3 = int(input("Put a time-intervals between clicks: ", ))  # sec
-
-        self.label_text.setText("Put a time-intervals between clicks: ")
-        self.is_equal = True
-        self.Timer_interval = eval(self.label_text.text())
-        self.label_time.setText(str(self.Timer_interval))
-
-        print(self.Number_click, self.Timer_interval)
-
-    elif self.START_Type == 'Restart':
-        self.START_session()
-        Number = int(input("Put a Number of 1-clicks: ", ))  # sec
-        timer3 = int(input("Put a time-intervals between clicks: ", ))  # sec
-    print()
-
-    break
-
-    ##Номерной блок, зависящий от кол-ва кликов и временными интервалами между ними
-    while Number:  # пока текущее время < Времени окончания делаем клики
-        print("%d click left" % (Number))
-        ##pg.click(x, y)
-        mouse.move(x, y)
-        mouse.click(button='left')
-        chetchick(timer3)
-        Number -= 1
-
-    print('Time is over for this Session\n')
-    print('Restart/Continue or end the Session?\nEnter - 1/2/else\n')
-    ans = input()
-    STARTER, START_Type = STOP_session(ans)
-    print(STARTER)
-'''
