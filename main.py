@@ -247,8 +247,6 @@ class Ui_MainWindow(object):
             t1.start()
 
         elif self.condition == 0:
-            #self.FIND_posintion()
-            #print('x: '+str(self.x_coord)+'\ty: '+str(self.y_coord))
 
             self.condition = 1
             self.label_text.setText("Put a Number of 1-clicks: ")
@@ -256,6 +254,7 @@ class Ui_MainWindow(object):
 
         elif self.condition == 1:
             self.results()
+
             self.Number_clicks = self.calc_result
             self.Current_number = self.calc_result
             self.label_click.setText(str(self.Number_clicks))
@@ -266,21 +265,17 @@ class Ui_MainWindow(object):
 
         elif self.condition == 2:
             self.results()
+
             self.Timer_interval = self.calc_result
             self.Current_time = self.calc_result
 
             self.label_time.setText(str(self.Timer_interval))
-
-            #self.condition = 0
-            #self.label_text.setText("Put a time-intervals between clicks: ")
-            #self.is_equal = True
 
             self.STARTER = True
             self.START_Type = 'Continue'
 
             #self.label_text.setText("Press Enter to start the procces: ")
             self.condition = 3
-
             self.pushButton_Enter.click()
 
         elif self.condition == 3:
@@ -326,20 +321,6 @@ class Ui_MainWindow(object):
             #self.FIND_posintion()
             #self.pushButton_Enter.click()
 
-    '''
-    def FIND_posintion(self):
-        print("Choose the position you need by cursor and right-click on it:\n")
-        while True:
-            if mouse.is_pressed(button='right'):  # left
-                #print('Gotcha')
-                #x, y = self.choose_posintion()
-                #return x, y
-                x, y = mouse.get_position()
-                self.x_coord = x
-                self.y_coord = y
-                print('x: ' + str(self.x_coord) + '\ty: ' + str(self.y_coord))
-                break
-    '''
 
     def Thread_FIND_posintion(self, slumber):
         print("Choose the position you need by cursor and right-click on it:\n")
@@ -394,26 +375,6 @@ class Ui_MainWindow(object):
             #print('Current_time:', self.Current_time)
             #print('Timer_interval:', self.Timer_interval)
 
-'''
-class Position_Thread(QThread):
-    x=0
-    y=0
-    def __init__(self):
-        QtCore.QThread.__init__(self)
-
-    def run(self):
-        while True:
-            print('thread ee')
-            if mouse.is_pressed(button='right'):  # left
-                #print('Gotcha')
-                #x, y = self.choose_posintion()
-                #return x, y
-                x, y = mouse.get_position()
-                self.x = x
-                self.y = y
-                print('x: ' + str(self.x_coord) + '\ty: ' + str(self.y_coord))
-                Position_Thread.finished()
-'''
 
 if __name__ == "__main__":
 
