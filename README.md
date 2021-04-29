@@ -7,7 +7,9 @@ new version of clicker-1.0 with interface
 ### 0. Установить Python
   
 ### 1. Установить pyinstaller с помощью cmd
-pip install pyinstaller
+pip install pyinstaller  
+pip install PyQt5   
+pip install mouse 
   
 ### 2. Скачать репозиторий
   
